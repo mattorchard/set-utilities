@@ -4,6 +4,7 @@ import OptionsForm from "./components/OptionsForm";
 import SourcesForm from "./components/SourcesForm";
 import { applyOperationToSources } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
+import CssColorVariableStyle from "./components/CssColorVariableStyle";
 
 const App = () => {
   const [sources, setSources] = useState<RunSource[] | null>(null);
@@ -18,13 +19,13 @@ const App = () => {
     setResult(result);
   };
   return (
-    <div>
+    <div className="bp4-dark app">
       <section>
-        <h2>Sources</h2>
+        <h2 className="bp4-heading">Sources</h2>
         <SourcesForm onSubmit={setSources} />
       </section>
       <section>
-        <h2>Options</h2>
+        <h2 className="bp4-heading">Options</h2>
         <OptionsForm onSubmit={setRunOptions} />
       </section>
       <section>
@@ -35,6 +36,7 @@ const App = () => {
         )}
       </section>
       <section>{result && <ResultView result={result} />}</section>
+      <CssColorVariableStyle />
     </div>
   );
 };
