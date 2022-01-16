@@ -9,18 +9,24 @@ import { Button, NonIdealState } from "@blueprintjs/core";
 import CircleDot from "./components/CircleDot";
 import Box from "./components/Box";
 
+interface Result {
+  report: RunReportItem[];
+  options: RunOptions;
+}
+
 const App = () => {
   const [sources, setSources] = useState<RunSource[] | null>(null);
-  const [runOptions, setRunOptions] = useState<RunOptions | null>(null);
-  const [result, setResult] = useState<RunResult[][] | null>(null);
+  const [options, setOptions] = useState<RunOptions | null>(null);
+
+  const [result, setResult] = useState<Result | null>(null);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!runOptions || !sources) return;
-    console.log("Getting a result", { runOptions, sources });
-    const result = applyOperationToSources(sources, runOptions);
-    console.log("Got a result", result);
-    setResult(result);
+    if (!options || !sources) return;
+    console.log("Getting a result", { options, sources });
+    const report = applyOperationToSources(sources, options);
+    console.log("Got report", report);
+    setResult({ report, options });
   };
   return (
     <Fragment>
@@ -31,13 +37,31 @@ const App = () => {
         </section>
         <section>
           <SectionHeading stepNumber={2}>Options</SectionHeading>
-          <OptionsFieldSet onChange={setRunOptions} />
+          <OptionsFieldSet onChange={setOptions} />
         </section>
         <section>
           <SectionHeading stepNumber={3}>Output</SectionHeading>
 
           {result ? (
-            <ResultView result={result} />
+            <>
+              <Button
+                intent="success"
+                large
+                type="submit"
+                disabled={!sources || sources.length < 2}
+                title={
+                  sources && sources.length < 2
+                    ? "You must have at least two sources to compare"
+                    : ""
+                }
+              >
+                Calculate
+              </Button>
+              <ResultView
+                report={result.report}
+                isNamesEnabled={result.options.operation !== "intersection"}
+              />
+            </>
           ) : (
             <div>
               <NonIdealState icon="calculator">

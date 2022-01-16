@@ -30,6 +30,8 @@ const asDocument = (
   };
 };
 
+const combineIds = (docIds: string[]) => docIds.sort().join("_");
+
 const applyOperationToDocuments = (
   docs: RunSourceDocument[],
   isDesiredCount: (count: number) => any,
@@ -53,18 +55,31 @@ const applyOperationToDocuments = (
     })
   );
 
-  const results: RunResult[][] = [];
+  const results = new Map<string, RunReportItem>();
+
   for (const docsLineSeenIn of linesSeenInMap.values()) {
     if (!isDesiredCount(docsLineSeenIn.size)) continue;
-    results.push([...docsLineSeenIn.values()]);
+
+    const runResults = [...docsLineSeenIn.values()];
+    const docIds = runResults.map((result) => result.doc.id);
+    const combinedDocId = combineIds(docIds);
+
+    const reportItem = results.get(combinedDocId) ?? {
+      id: createId(),
+      combinedDocId,
+      results: [],
+      docs: runResults.map((r) => r.doc),
+    };
+    reportItem.results.push(runResults);
+    results.set(combinedDocId, reportItem);
   }
-  return results;
+  return [...results.values()];
 };
 
 export const applyOperationToSources = (
   sources: RunSource[],
   options: RunOptions
-) => {
+): RunReportItem[] => {
   if (sources.length < 2) throw new Error(`Must have at least two sources`);
   const sourceDocuments = sources.map((source) => asDocument(source, options));
   switch (options.operation) {

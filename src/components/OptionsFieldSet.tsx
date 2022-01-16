@@ -16,7 +16,7 @@ interface OptionsFormProps {
 const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(true);
   const [ignoreCase, setIgnoreCase] = useState(true);
-  const [delimiter, setDelimiter] = useState("\r?\n");
+  const [delimiter, setDelimiter] = useState("\\r?\\n");
   const [minLength, setMinLength] = useState(1);
   const [operation, setOperation] = useState<RunOperation>("intersection");
 

@@ -29,6 +29,12 @@ declare global {
     lines: RunDocumentLine[];
     id: string;
   }
+  interface RunReportItem {
+    id: string;
+    combinedDocId: string;
+    docs: RunSourceDocument[];
+    results: RunResult[][];
+  }
 }
 
 export {};

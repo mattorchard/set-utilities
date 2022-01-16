@@ -1,15 +1,23 @@
 import React from "react";
+import Typo from "./Typo";
+import "./ResultView.css";
 
 interface ResultViewProps {
-  result: RunResult[][];
+  report: RunReportItem[];
+  isNamesEnabled: boolean;
 }
 
-const ResultView: React.FC<ResultViewProps> = ({ result }) => (
+const ResultView: React.FC<ResultViewProps> = ({ report, isNamesEnabled }) => (
   <ol>
-    {result.map((result, index) => (
-      <li key={index}>
-        {result[0].lines[0].original}
-        In docs ({result.map((r) => r.doc.name).join(", ")})
+    {report.map((reportItem) => (
+      <li key={reportItem.id}>
+        {isNamesEnabled &&
+          `In docs (${reportItem.docs.map((r) => r.name).join(", ")})`}
+        {reportItem.results.map((results, index) => (
+          <Typo key={index} monospace className="result__preview">
+            {results[0].lines[0].original}
+          </Typo>
+        ))}
       </li>
     ))}
   </ol>
