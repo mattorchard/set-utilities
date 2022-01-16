@@ -5,6 +5,9 @@ type DivProps = React.DetailedHTMLProps<
   HTMLDivElement
 >;
 
+type PaddingType = CSSProperties["paddingTop"];
+type MarginType = CSSProperties["paddingTop"];
+
 export interface BoxProps {
   as?: keyof JSX.IntrinsicElements;
   className?: string;
@@ -12,20 +15,20 @@ export interface BoxProps {
   justifyContent?: CSSProperties["justifyContent"];
   flexDirection?: CSSProperties["flexDirection"];
   inline?: boolean;
-  p?: number;
-  px?: number;
-  py?: number;
-  pt?: number;
-  pr?: number;
-  pb?: number;
-  pl?: number;
-  m?: number;
-  mx?: number;
-  my?: number;
-  mt?: number;
-  mr?: number;
-  mb?: number;
-  ml?: number;
+  p?: PaddingType;
+  px?: PaddingType;
+  py?: PaddingType;
+  pt?: PaddingType;
+  pr?: PaddingType;
+  pb?: PaddingType;
+  pl?: PaddingType;
+  m?: MarginType;
+  mx?: MarginType;
+  my?: MarginType;
+  mt?: MarginType;
+  mr?: MarginType;
+  mb?: MarginType;
+  ml?: MarginType;
 }
 
 const Box: React.FC<BoxProps & DivProps> = ({

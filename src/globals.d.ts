@@ -15,18 +15,19 @@ declare global {
     name: string;
     content: string;
   }
-  type RunDocumentLine = {
-    index: number;
+  interface RunDocumentSegment {
+    lineStart: number;
+    lineEnd: number;
     original: string;
     clean: string;
-  };
+  }
   interface RunSourceDocument extends RunSource {
-    lines: RunDocumentLine[];
+    segments: RunDocumentSegment[];
   }
 
   interface RunResult {
     doc: RunSourceDocument;
-    lines: RunDocumentLine[];
+    lines: RunDocumentSegment[];
     id: string;
   }
   interface RunReportItem {

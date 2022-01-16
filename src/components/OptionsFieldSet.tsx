@@ -8,6 +8,7 @@ import {
   Switch,
 } from "@blueprintjs/core";
 import Typo from "./Typo";
+import VennDiagram from "./VennDiagram";
 
 interface OptionsFormProps {
   onChange: (options: RunOptions) => void;
@@ -16,7 +17,7 @@ interface OptionsFormProps {
 const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(true);
   const [ignoreCase, setIgnoreCase] = useState(true);
-  const [delimiter, setDelimiter] = useState("\\r?\\n");
+  const [delimiter, setDelimiter] = useState("\\s*\\n");
   const [minLength, setMinLength] = useState(1);
   const [operation, setOperation] = useState<RunOperation>("intersection");
 
@@ -28,10 +29,22 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
       operation,
       minLength,
     });
-  }, [ignoreWhitespace, ignoreCase, delimiter, minLength, operation]);
+  }, [onChange, ignoreWhitespace, ignoreCase, delimiter, minLength, operation]);
 
   return (
     <fieldset className="options-form">
+      <RadioGroup
+        label={<Typo large>Operation</Typo>}
+        selectedValue={operation}
+        onChange={(e) => setOperation(e.currentTarget.value as RunOperation)}
+        name="operation"
+        inline
+      >
+        <Radio label="Intersection" value="intersection" />
+        <Radio label="Unique" value="unique" />
+        <Radio label="Common" value="common" />
+      </RadioGroup>
+
       <Switch
         label="Ignore Whitespace"
         checked={ignoreWhitespace}
@@ -64,16 +77,18 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
         />
       </FormGroup>
 
-      <RadioGroup
-        label={<Typo large>Operation</Typo>}
-        selectedValue={operation}
-        onChange={(e) => setOperation(e.currentTarget.value as RunOperation)}
-        name="operation"
+      <div
+        style={{
+          position: "absolute",
+          bottom: "1rem",
+          left: "50%",
+          right: "1rem",
+          opacity: 0.6,
+          pointerEvents: "none",
+        }}
       >
-        <Radio label="Intersection" value="intersection" />
-        <Radio label="Unique" value="unique" />
-        <Radio label="Common" value="common" />
-      </RadioGroup>
+        <VennDiagram operation={operation} />
+      </div>
     </fieldset>
   );
 };

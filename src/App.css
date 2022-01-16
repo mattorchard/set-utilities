@@ -1,16 +1,20 @@
 :root {
-  background-color: var(--dark-gray-2);
+  background-color: var(--dark-gray-1);
 }
 
 .non-list {
   list-style: none;
 }
+
 .app__form {
+  transition: grid-template-columns 1s ease-in-out;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 400px);
+  grid-template-columns: 1fr repeat(3, min-content) 1fr;
   grid-gap: 32px;
-  max-width: calc(400px * 3 + 32px * 2);
-  padding: 16px;
-  justify-items: center;
+  padding: 16px 0;
+  height: 100vh;
+  align-items: flex-start;
+  overflow-y: hidden;
 }
+

@@ -27,7 +27,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
 
   useEffect(() => {
     onChange(sources);
-  }, [sources]);
+  }, [onChange, sources]);
 
   const handleRemoveSource = (idToRemove: string) =>
     setSources((sources) =>
@@ -150,7 +150,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
               ? "Add sources for comparison"
               : "Add at least one more source"}
           </h3>
-          <div>Each source's content will be used to generate the results</div>
+          <p>Each source's content will be used to generate the results.</p>
         </NonIdealState>
       )}
       <input

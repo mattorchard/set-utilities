@@ -5,9 +5,8 @@ import SourcesFieldset from "./components/SourcesFieldset";
 import { applyOperationToSources } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
-import { Button, NonIdealState } from "@blueprintjs/core";
-import CircleDot from "./components/CircleDot";
-import Box from "./components/Box";
+import { Button, Icon, NonIdealState } from "@blueprintjs/core";
+import AppSection from "./components/AppSection";
 
 interface Result {
   report: RunReportItem[];
@@ -20,6 +19,8 @@ const App = () => {
 
   const [result, setResult] = useState<Result | null>(null);
 
+  const hasSufficientSources = sources && sources.length >= 2;
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!options || !sources) return;
@@ -31,78 +32,50 @@ const App = () => {
   return (
     <Fragment>
       <form className="bp4-dark app__form" onSubmit={handleSubmit}>
-        <section>
-          <SectionHeading stepNumber={1}>Sources</SectionHeading>
+        <div />
+        <AppSection stepNumber={1} heading="Sources">
           <SourcesFieldset onChange={setSources} />
-        </section>
-        <section>
-          <SectionHeading stepNumber={2}>Options</SectionHeading>
+        </AppSection>
+        <AppSection stepNumber={2} heading="Options">
           <OptionsFieldSet onChange={setOptions} />
-        </section>
-        <section>
-          <SectionHeading stepNumber={3}>Output</SectionHeading>
-
+        </AppSection>
+        <AppSection stepNumber={3} heading="Output" isExpandEnabled>
+          <Button
+            style={{ backgroundColor: `var(--indigo-2)` }}
+            large
+            type="submit"
+            disabled={!hasSufficientSources}
+            icon={<Icon icon="tick-circle" />}
+            title={
+              hasSufficientSources
+                ? ""
+                : "You must have at least two sources to compare"
+            }
+          >
+            Calculate
+          </Button>
           {result ? (
-            <>
-              <Button
-                intent="success"
-                large
-                type="submit"
-                disabled={!sources || sources.length < 2}
-                title={
-                  sources && sources.length < 2
-                    ? "You must have at least two sources to compare"
-                    : ""
-                }
-              >
-                Calculate
-              </Button>
-              <ResultView
-                report={result.report}
-                isNamesEnabled={result.options.operation !== "intersection"}
-              />
-            </>
+            <ResultView
+              report={result.report}
+              isNamesEnabled={result.options.operation !== "intersection"}
+            />
           ) : (
             <div>
               <NonIdealState icon="calculator">
-                <h3 className="bp4-heading">
-                  {sources && sources.length < 2
-                    ? "Connect your sources"
-                    : "Choose options and submit to view results"}
-                </h3>
-                <Button
-                  intent="success"
-                  large
-                  type="submit"
-                  disabled={!sources || sources.length < 2}
-                  title={
-                    sources && sources.length < 2
-                      ? "You must have at least two sources to compare"
-                      : ""
-                  }
-                >
-                  Calculate
-                </Button>
+                <h3 className="bp4-heading">View the output</h3>
+                <p>
+                  Results will display here with the original text and line
+                  number of each segment.
+                </p>
               </NonIdealState>
             </div>
           )}
-        </section>
+        </AppSection>
+        <div />
       </form>
       <CssColorVariableStyle />
     </Fragment>
   );
 };
-
-const SectionHeading: React.FC<{ stepNumber: number }> = ({
-  stepNumber,
-  children,
-}) => (
-  <Box as="h2" className="bp4-heading" alignItems="center">
-    <Box mr={8}>
-      <CircleDot>{stepNumber}</CircleDot>
-    </Box>
-    {children}
-  </Box>
-);
 
 export default App;

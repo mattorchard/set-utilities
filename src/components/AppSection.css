@@ -1,0 +1,14 @@
+.app-section {
+  box-shadow: 0 .5rem .5rem rgba(20,20,20,.1);
+  padding: 32px;
+  background-color: var(--dark-gray-2);
+  border-radius: 3px;
+  max-height: 100%;
+  overflow-y: auto;
+  width: 400px;
+  transition: width .5s ease-in-out;
+  position: relative;
+}
+.app-section--expanded {
+  width: calc(100vw - 64px);
+}
