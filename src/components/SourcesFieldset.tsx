@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getFileContents } from "../helpers/fileHelpers";
 import { createId } from "../helpers/idHelpers";
-import { Button, Icon, TextArea } from "@blueprintjs/core";
+import { Button, Icon, NonIdealState, TextArea } from "@blueprintjs/core";
 import FilePreview from "./FilePreview";
 import Box from "./Box";
 import Typo from "./Typo";
@@ -143,6 +143,16 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
           </Box>
         ))}
       </ul>
+      {sources.length < 2 && (
+        <NonIdealState icon="folder-open">
+          <h3 className="bp4-heading">
+            {sources.length === 0
+              ? "Add sources for comparison"
+              : "Add at least one more source"}
+          </h3>
+          <div>Each source's content will be used to generate the results</div>
+        </NonIdealState>
+      )}
       <input
         type="file"
         hidden
