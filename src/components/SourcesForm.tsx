@@ -1,7 +1,10 @@
 import React, { FormEvent, useRef, useState } from "react";
 import { getFileContents } from "../helpers/fileHelpers";
-import Spinner from "./Spinner";
 import { createId } from "../helpers/idHelpers";
+import { Button, Icon, TextArea } from "@blueprintjs/core";
+import FilePreview from "./FilePreview";
+import Box from "./Box";
+import Typo from "./Typo";
 
 const sourceName = (id: string) => `sourceName_${id}`;
 const contentName = (id: string) => `content_${id}`;
@@ -65,53 +68,69 @@ const SourcesForm: React.FC<SourcesFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <button
-        type="button"
+      <Button
         onClick={() => inputRef.current.click()}
-        disabled={isReadingFile}
+        loading={isReadingFile}
+        icon={<Icon icon="folder-new" />}
       >
-        {isReadingFile ? <Spinner /> : "Add file"}
-      </button>
-      <button type="button" onClick={addRawSource}>
+        Add File
+      </Button>
+      <Button onClick={addRawSource} icon={<Icon icon="new-text-box" />}>
         Add Text
-      </button>
-      <ul>
+      </Button>
+      <ul className="non-list">
         {fileSources.map((fileSource) => (
           <li key={fileSource.id}>
-            {fileSource.name}
-            <span>{fileSource.content.substring(0, 100)}</span>
-            <button
-              title="Remove file"
-              onClick={() => removeFile(fileSource.id)}
-            >
-              &times;
-            </button>
+            <Box my={4} justifyContent="space-between">
+              <Typo large>
+                <strong>{fileSource.name}</strong>
+              </Typo>
+              <Button
+                type="button"
+                onClick={() => removeFile(fileSource.id)}
+                intent="danger"
+                minimal
+                icon={<Icon icon="delete" intent="primary" />}
+              >
+                Remove
+              </Button>
+            </Box>
+            <FilePreview content={fileSource.content} />
           </li>
         ))}
       </ul>
       {rawSourceIds.map((id, index) => (
         <fieldset key={id}>
-          <label>
-            Name
+          <Box my={4} justifyContent="space-between">
             <input
               type="text"
+              className="bp4-input"
               required
               name={sourceName(id)}
               defaultValue={`Source ${index + 1}`}
+              aria-label="Source Name"
               placeholder="Source Name"
             />
-          </label>
-          <label>
-            Content
-            <textarea name={contentName(id)} />
-          </label>
-          <button
-            type="button"
-            onClick={() => removeRawSource(id)}
-            title="Remove source"
-          >
-            &times;
-          </button>
+
+            <Button
+              type="button"
+              onClick={() => removeRawSource(id)}
+              intent="danger"
+              minimal
+              icon={<Icon icon="delete" intent="primary" />}
+            >
+              Remove
+            </Button>
+          </Box>
+
+          <TextArea
+            aria-label="Content"
+            growVertically
+            fill
+            name={contentName(id)}
+            placeholder="Lorem ipsum"
+            style={{ resize: "vertical" }}
+          />
         </fieldset>
       ))}
       <button type="submit">Next</button>

@@ -39,7 +39,7 @@ const OptionsForm: React.FC<OptionsFormProps> = ({ onSubmit }) => {
       <Switch name="ignoreCase" defaultChecked label="Ignore Case" />
 
       <FormGroup>
-        <Typo large>Delimiter</Typo>
+        <Typo large>Delimiter (Regex)</Typo>
         <InputGroup
           name="delimiter"
           defaultValue="\r?\n"

@@ -5,6 +5,6 @@
   max-width: 400px;
   margin: 0 auto;
 }
-big {
-  font-size: 16px;
+.non-list {
+  list-style: none;
 }
