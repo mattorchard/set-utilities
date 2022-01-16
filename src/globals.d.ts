@@ -11,6 +11,7 @@ declare global {
 
   interface RunSource {
     id: string;
+    type: "raw" | "file";
     name: string;
     content: string;
   }

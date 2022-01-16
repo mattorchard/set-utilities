@@ -1,11 +1,17 @@
 import React, { CSSProperties } from "react";
 
+type DivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
 export interface BoxProps {
   as?: keyof JSX.IntrinsicElements;
   className?: string;
   alignItems?: CSSProperties["alignItems"];
   justifyContent?: CSSProperties["justifyContent"];
   flexDirection?: CSSProperties["flexDirection"];
+  inline?: boolean;
   p?: number;
   px?: number;
   py?: number;
@@ -22,7 +28,7 @@ export interface BoxProps {
   ml?: number;
 }
 
-const Box: React.FC<BoxProps> = ({
+const Box: React.FC<BoxProps & DivProps> = ({
   p,
   px,
   py,
@@ -37,12 +43,14 @@ const Box: React.FC<BoxProps> = ({
   mr,
   mb,
   ml,
+  inline,
   flexDirection,
   alignItems,
   justifyContent,
   className,
   as: As = "div",
   children,
+  ...props
 }) => {
   const style = {
     marginTop: mt ?? my ?? m,
@@ -53,13 +61,15 @@ const Box: React.FC<BoxProps> = ({
     paddingRight: pr ?? px ?? p,
     paddingBottom: pb ?? py ?? p,
     paddingLeft: pl ?? px ?? p,
-    display: "flex",
+    display: inline ? "inline-flex" : "flex",
     flexDirection,
     alignItems,
     justifyContent,
   };
+
   return (
-    <As className={className} style={style}>
+    // @ts-ignore
+    <As {...props} className={className} style={style}>
       {children}
     </As>
   );

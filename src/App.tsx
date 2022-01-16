@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
-import OptionsForm from "./components/OptionsForm";
-import SourcesForm from "./components/SourcesForm";
+import OptionsFieldSet from "./components/OptionsFieldSet";
+import SourcesFieldset from "./components/SourcesFieldset";
 import { applyOperationToSources } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
+import { Button } from "@blueprintjs/core";
 
 const App = () => {
   const [sources, setSources] = useState<RunSource[] | null>(null);
@@ -22,17 +23,17 @@ const App = () => {
     <div className="bp4-dark app">
       <section>
         <h2 className="bp4-heading">Sources</h2>
-        <SourcesForm onSubmit={setSources} />
+        <SourcesFieldset onChange={setSources} />
       </section>
       <section>
         <h2 className="bp4-heading">Options</h2>
-        <OptionsForm onSubmit={setRunOptions} />
+        <OptionsFieldSet onChange={setRunOptions} />
       </section>
       <section>
         {sources && runOptions && (
-          <button type="button" onClick={handleRun}>
+          <Button intent="success" large onClick={handleRun}>
             Submit
-          </button>
+          </Button>
         )}
       </section>
       <section>{result && <ResultView result={result} />}</section>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { CSSProperties, useMemo } from "react";
 
 interface TypoProps {
   as?: keyof JSX.IntrinsicElements;
@@ -9,6 +9,7 @@ interface TypoProps {
   disabled?: boolean;
   ellipsis?: boolean;
   className?: string;
+  style?: CSSProperties;
 }
 
 const condClass = (condition: boolean, name: string) =>
@@ -23,6 +24,7 @@ const Typo: React.FC<TypoProps> = ({
   disabled = false,
   ellipsis = false,
   className = "",
+  style,
   children,
 }) => {
   const fullClassName = useMemo(
@@ -38,7 +40,11 @@ const Typo: React.FC<TypoProps> = ({
       ].join(" "),
     [monospace, large, small, muted, disabled, ellipsis, className]
   );
-  return <As className={fullClassName}>{children}</As>;
+  return (
+    <As className={fullClassName} style={style}>
+      {children}
+    </As>
+  );
 };
 
 export default Typo;
