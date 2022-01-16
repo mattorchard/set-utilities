@@ -7,6 +7,7 @@ import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
 import { Button, Icon, NonIdealState } from "@blueprintjs/core";
 import AppSection from "./components/AppSection";
+import NisList from "./components/NisList";
 
 interface Result {
   report: RunReportItem[];
@@ -54,22 +55,17 @@ const App = () => {
           >
             Calculate
           </Button>
-          {result ? (
-            <ResultView
-              report={result.report}
-              isNamesEnabled={result.options.operation !== "intersection"}
-            />
-          ) : (
-            <div>
-              <NonIdealState icon="calculator">
-                <h3 className="bp4-heading">View the output</h3>
-                <p>
-                  Results will display here with the original text and line
-                  number of each segment.
-                </p>
-              </NonIdealState>
-            </div>
-          )}
+          <NisList
+            list={result?.report}
+            defaultRender={() => (
+              <ResultView
+                report={result!.report}
+                isNamesEnabled={result!.options.operation !== "intersection"}
+              />
+            )}
+            emptyRender={EmptyOutputNis}
+            nonListRender={NoOutputNis}
+          />
         </AppSection>
         <div />
       </form>
@@ -77,5 +73,26 @@ const App = () => {
     </Fragment>
   );
 };
+
+const NoOutputNis = () => (
+  <div>
+    <NonIdealState icon="calculator">
+      <h3 className="bp4-heading">View the output</h3>
+      <p>
+        Results will display here with the original text and line number of each
+        segment.
+      </p>
+    </NonIdealState>
+  </div>
+);
+
+const EmptyOutputNis = () => (
+  <div>
+    <NonIdealState icon="zoom-out">
+      <h3 className="bp4-heading">No results</h3>
+      <p>No results found. Check your sources and options.</p>
+    </NonIdealState>
+  </div>
+);
 
 export default App;
