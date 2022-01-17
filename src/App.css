@@ -17,4 +17,26 @@
   align-items: flex-start;
   overflow-y: hidden;
 }
+@media only screen and (max-width: calc(400px * 3 + 32px * 4)) {
+  .app__form {
+    height: unset;
+    grid-template-columns: unset;
+    grid-template-rows: 1fr repeat(3, min-content) 1fr;
+    justify-items: center;
+  }
+}
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  /*box-shadow: inset 0 0 5px grey;*/
+  border-radius: 16px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(20,20,20,.6);
+  border-radius: 10px;
+}

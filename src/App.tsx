@@ -34,7 +34,7 @@ const App = () => {
   return (
     <Fragment>
       <form className="bp4-dark app__form" onSubmit={handleSubmit}>
-        <div />
+        <div className="bumper" />
         <AppSection stepNumber={1} heading="Sources">
           <SourcesFieldset onChange={setSources} />
         </AppSection>
@@ -70,7 +70,7 @@ const App = () => {
             nonListRender={NoOutputNis}
           />
         </AppSection>
-        <div />
+        <div className="bumper" />
       </form>
       <CssColorVariableStyle />
     </Fragment>
