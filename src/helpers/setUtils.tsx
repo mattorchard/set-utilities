@@ -52,27 +52,27 @@ const applyOperationToDocuments = (
   isDesiredCount: (count: number) => any,
   minLength: number
 ) => {
-  const linesSeenInMap = new Map<string, Map<string, RunResult>>();
+  const segmentsSeenInMap = new Map<string, Map<string, RunResult>>();
   docs.forEach((doc) =>
     doc.segments.forEach((segment) => {
       if (segment.clean.length < minLength) return;
       if (isOnlyWhitespace(segment.clean)) return;
       const docsLineSeenIn =
-        linesSeenInMap.get(segment.clean) ?? new Map<string, RunResult>();
+        segmentsSeenInMap.get(segment.clean) ?? new Map<string, RunResult>();
       const intermediateMatch = docsLineSeenIn.get(doc.id) ?? {
         doc,
-        lines: [],
+        segments: [],
         id: createId(),
       };
-      intermediateMatch.lines.push(segment);
+      intermediateMatch.segments.push(segment);
       docsLineSeenIn.set(doc.id, intermediateMatch);
-      linesSeenInMap.set(segment.clean, docsLineSeenIn);
+      segmentsSeenInMap.set(segment.clean, docsLineSeenIn);
     })
   );
 
   const results = new Map<string, RunReportItem>();
 
-  for (const docsLineSeenIn of linesSeenInMap.values()) {
+  for (const docsLineSeenIn of segmentsSeenInMap.values()) {
     if (!isDesiredCount(docsLineSeenIn.size)) continue;
 
     const runResults = [...docsLineSeenIn.values()];

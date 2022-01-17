@@ -41,11 +41,11 @@ const ResultView: React.FC<ResultViewProps> = ({ report, isNamesEnabled }) => (
             content={
               <pre>
                 {results.map((result) =>
-                  result.lines.map((r, index) => (
+                  result.segments.map((segment, index) => (
                     <Fragment key={index}>
                       <TooltipText
-                        lineStart={r.lineStart}
-                        lineEnd={r.lineEnd}
+                        lineStart={segment.lineStart}
+                        lineEnd={segment.lineEnd}
                         name={result.doc.name}
                       />
                       <br />
@@ -56,7 +56,7 @@ const ResultView: React.FC<ResultViewProps> = ({ report, isNamesEnabled }) => (
             }
           >
             <Typo key={index} monospace className="result__preview">
-              {results[0].lines[0].original}
+              {results[0].segments[0].original}
             </Typo>
           </Tooltip>
         ))}

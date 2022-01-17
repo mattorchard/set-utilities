@@ -27,7 +27,7 @@ declare global {
 
   interface RunResult {
     doc: RunSourceDocument;
-    lines: RunDocumentSegment[];
+    segments: RunDocumentSegment[];
     id: string;
   }
   interface RunReportItem {
