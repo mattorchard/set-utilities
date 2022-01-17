@@ -8,6 +8,7 @@ import CssColorVariableStyle from "./components/CssColorVariableStyle";
 import { Button, Icon, NonIdealState } from "@blueprintjs/core";
 import AppSection from "./components/AppSection";
 import NisList from "./components/NisList";
+import Box from "./components/Box";
 
 interface Result {
   report: RunReportItem[];
@@ -41,20 +42,22 @@ const App = () => {
           <OptionsFieldSet onChange={setOptions} />
         </AppSection>
         <AppSection stepNumber={3} heading="Output" isExpandEnabled>
-          <Button
-            style={{ backgroundColor: `var(--indigo-2)` }}
-            large
-            type="submit"
-            disabled={!hasSufficientSources}
-            icon={<Icon icon="tick-circle" />}
-            title={
-              hasSufficientSources
-                ? ""
-                : "You must have at least two sources to compare"
-            }
-          >
-            Calculate
-          </Button>
+          <Box mb={8}>
+            <Button
+              style={{ backgroundColor: `var(--indigo-2)` }}
+              large
+              type="submit"
+              disabled={!hasSufficientSources}
+              icon={<Icon icon="tick-circle" />}
+              title={
+                hasSufficientSources
+                  ? ""
+                  : "You must have at least two sources to compare"
+              }
+            >
+              Calculate
+            </Button>
+          </Box>
           <NisList
             list={result?.report}
             defaultRender={() => (

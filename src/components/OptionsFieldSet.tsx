@@ -9,6 +9,7 @@ import {
 } from "@blueprintjs/core";
 import Typo from "./Typo";
 import VennDiagram from "./VennDiagram";
+import "./OptionsForm.css";
 
 interface OptionsFormProps {
   onChange: (options: RunOptions) => void;
@@ -34,7 +35,11 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
   return (
     <fieldset className="options-form">
       <RadioGroup
-        label={<Typo large>Operation</Typo>}
+        label={
+          <Typo large as="strong">
+            Operation
+          </Typo>
+        }
         selectedValue={operation}
         onChange={(e) => setOperation(e.currentTarget.value as RunOperation)}
         name="operation"

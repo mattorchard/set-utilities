@@ -42,10 +42,9 @@ const AppSection: React.FC<AppSectionProps> = ({
             <Button
               aria-label="Expand section"
               minimal
-              large
               onClick={handleToggleExpand}
             >
-              <Icon icon="arrows-horizontal" size={24} />
+              <Icon icon="arrows-horizontal" size={20} />
             </Button>
           </Tooltip>
         )}

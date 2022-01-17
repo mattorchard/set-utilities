@@ -84,7 +84,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
 
   return (
     <fieldset>
-      <Box mr={8} inline>
+      <Box mr={8} inline mb={8}>
         <Button
           onClick={() => fileInputRef.current.click()}
           loading={isReadingFile}
@@ -95,7 +95,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
           Add File
         </Button>
       </Box>
-      <Box inline>
+      <Box inline mb={8}>
         <Button
           onClick={handleAddRawSource}
           icon={<Icon icon="new-text-box" />}
