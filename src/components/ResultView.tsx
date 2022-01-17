@@ -1,65 +1,65 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Typo from "./Typo";
 import "./ResultView.css";
-import { Tooltip } from "@blueprintjs/core";
 import Box from "./Box";
+import { Tooltip } from "@blueprintjs/core";
 
 interface ResultViewProps {
   report: RunReportItem[];
-  isNamesEnabled: boolean;
+  includeHeadings: boolean;
 }
 
-interface TooltipTextProps {
-  lineStart: number;
-  lineEnd: number;
-  name: string;
-}
-const TooltipText = ({ lineStart, lineEnd, name }: TooltipTextProps) => (
-  <span>
-    <strong>{name}</strong>{" "}
-    {lineStart === lineEnd ? (
-      lineStart
-    ) : (
-      <>
-        {lineStart}-{lineEnd}
-      </>
-    )}
-  </span>
-);
+const nonBreakingHyphen = "‑";
 
-const ResultView: React.FC<ResultViewProps> = ({ report, isNamesEnabled }) => (
+const formatLineNumber = ({ lineStart, lineEnd }: RunDocumentSegment) =>
+  lineStart === lineEnd
+    ? lineStart
+    : `${lineStart}${nonBreakingHyphen}${lineEnd}`;
+
+const ResultView: React.FC<ResultViewProps> = ({
+  report,
+  includeHeadings = true,
+}) => (
   <ol>
     {report.map((reportItem) => (
-      <Box as="li" flexDirection="column" key={reportItem.id}>
-        {isNamesEnabled && (
-          <Typo large>
-            In docs ({reportItem.docs.map((r) => r.name).join(", ")})
-          </Typo>
-        )}
-        {reportItem.results.map((results, index) => (
-          <Tooltip
-            content={
-              <pre>
-                {results.map((result) =>
-                  result.segments.map((segment, index) => (
-                    <Fragment key={index}>
-                      <TooltipText
-                        lineStart={segment.lineStart}
-                        lineEnd={segment.lineEnd}
-                        name={result.doc.name}
-                      />
-                      <br />
-                    </Fragment>
-                  ))
-                )}
-              </pre>
-            }
-          >
-            <Typo key={index} monospace className="result__preview">
-              {results[0].segments[0].original}
-            </Typo>
-          </Tooltip>
-        ))}
+      <Box as="li" flexDirection="column" key={reportItem.id} mb={32}>
+        <h3 className="bp4-heading" hidden={!includeHeadings}>
+          Appears in{" "}
+          <Typo muted>{reportItem.docs.map((doc) => doc.name).join(", ")}</Typo>
+        </h3>
+        <table className="result-view__table bp4-html-table bp4-html-tabl2e-bordered">
+          <thead>
+            <tr>
+              <th colSpan={reportItem.docs.length}>
+                <Tooltip
+                  content={reportItem.docs.map((doc) => doc.name).join(", ")}
+                >
+                  Line&nbsp;№
+                </Tooltip>
+              </th>
+
+              <th>Segment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reportItem.results.map((result, index) => (
+              <tr key={index}>
+                {result.map((result) => (
+                  <td key={result.id} title={result.doc.name}>
+                    {result.segments
+                      .map((segment) => formatLineNumber(segment))
+                      .join(", ")}
+                  </td>
+                ))}
+                <td className="result-view__table__segment">
+                  <Typo as="pre" monospace>
+                    {result[0].segments[0].original}
+                  </Typo>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </Box>
     ))}
   </ol>

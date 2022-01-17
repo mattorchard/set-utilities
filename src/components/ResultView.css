@@ -1,5 +1,9 @@
-.result__preview {
+
+.result-view__table td:not(:last-child),
+.result-view__table th:not(:last-child) {
+  width: 0;
+
+}
+.result-view__table__segment {
   background-color: var(--dark-gray-1);
-  padding: 8px;
-  display: block;
 }

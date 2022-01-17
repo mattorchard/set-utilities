@@ -63,7 +63,7 @@ const App = () => {
             defaultRender={() => (
               <ResultView
                 report={result!.report}
-                isNamesEnabled={result!.options.operation !== "intersection"}
+                includeHeadings={result!.options.operation !== "intersection"}
               />
             )}
             emptyRender={EmptyOutputNis}
