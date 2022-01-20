@@ -44,7 +44,7 @@ const App = () => {
           <OptionsFieldSet onChange={setOptions} />
         </AppSection>
         <AppSection stepNumber={3} heading="Output" isExpandEnabled>
-          <Box mb={8}>
+          <Box mb={8} alignItems="start">
             <Button
               style={{ backgroundColor: `var(--indigo-2)` }}
               large
