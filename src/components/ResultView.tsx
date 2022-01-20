@@ -7,6 +7,7 @@ import { Tooltip } from "@blueprintjs/core";
 interface ResultViewProps {
   report: RunReportItem[];
   includeHeadings: boolean;
+  includeLineNumbers: boolean;
 }
 
 const nonBreakingHyphen = "‑";
@@ -19,6 +20,7 @@ const formatLineNumber = ({ lineStart, lineEnd }: RunDocumentSegment) =>
 const ResultView: React.FC<ResultViewProps> = ({
   report,
   includeHeadings = true,
+  includeLineNumbers = true,
 }) => (
   <ol>
     {report.map((reportItem) => (
@@ -27,30 +29,33 @@ const ResultView: React.FC<ResultViewProps> = ({
           Appears in {reportItem.docs.length} sources{" "}
           <Typo muted>{reportItem.docs.map((doc) => doc.name).join(", ")}</Typo>
         </h3>
-        <table className="result-view__table bp4-html-table bp4-html-tabl2e-bordered">
-          <thead>
-            <tr>
-              <th colSpan={reportItem.docs.length}>
-                <Tooltip
-                  content={reportItem.docs.map((doc) => doc.name).join(", ")}
-                >
-                  Line&nbsp;№
-                </Tooltip>
-              </th>
+        <table className="result-view__table bp4-html-table bp4-interactive">
+          {includeLineNumbers && (
+            <thead>
+              <tr>
+                <th colSpan={reportItem.docs.length}>
+                  <Tooltip
+                    content={reportItem.docs.map((doc) => doc.name).join(", ")}
+                  >
+                    Line&nbsp;№
+                  </Tooltip>
+                </th>
 
-              <th>Segment</th>
-            </tr>
-          </thead>
+                <th>Segment</th>
+              </tr>
+            </thead>
+          )}
           <tbody>
             {reportItem.results.map((result, index) => (
               <tr key={index}>
-                {result.map((result) => (
-                  <td key={result.id} title={result.doc.name}>
-                    {result.segments
-                      .map((segment) => formatLineNumber(segment))
-                      .join(", ")}
-                  </td>
-                ))}
+                {includeLineNumbers &&
+                  result.map((result) => (
+                    <td key={result.id} title={result.doc.name}>
+                      {result.segments
+                        .map((segment) => formatLineNumber(segment))
+                        .join(", ")}
+                    </td>
+                  ))}
                 <td className="result-view__table__segment">
                   <Typo as="pre" monospace>
                     {result[0].segments[0].original}

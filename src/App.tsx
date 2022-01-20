@@ -5,7 +5,7 @@ import SourcesFieldset from "./components/SourcesFieldset";
 import { applyOperationToSources } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
-import { Button, Icon, NonIdealState } from "@blueprintjs/core";
+import { Button, Icon, NonIdealState, Switch } from "@blueprintjs/core";
 import AppSection from "./components/AppSection";
 import NisList from "./components/NisList";
 import Box from "./components/Box";
@@ -18,8 +18,9 @@ interface Result {
 const App = () => {
   const [sources, setSources] = useState<RunSource[] | null>(null);
   const [options, setOptions] = useState<RunOptions | null>(null);
-
   const [result, setResult] = useState<Result | null>(null);
+  const [isHeadingEnabled, setIsHeadingEnabled] = useState(true);
+  const [isLineNumberEnabled, setIsLineNumberEnabled] = useState(true);
 
   const hasSufficientSources = sources && sources.length >= 2;
 
@@ -30,6 +31,7 @@ const App = () => {
     const report = applyOperationToSources(sources, options);
     console.log("Got report", report);
     setResult({ report, options });
+    if (options.operation === "intersection") setIsHeadingEnabled(false);
   };
   return (
     <Fragment>
@@ -57,13 +59,30 @@ const App = () => {
             >
               Calculate
             </Button>
+            {result && (
+              <Box ml="auto" flexDirection={"column"}>
+                <Switch
+                  labelElement="Headings"
+                  checked={isHeadingEnabled}
+                  onChange={(e) => setIsHeadingEnabled(e.currentTarget.checked)}
+                />
+                <Switch
+                  labelElement="Line №"
+                  checked={isLineNumberEnabled}
+                  onChange={(e) =>
+                    setIsLineNumberEnabled(e.currentTarget.checked)
+                  }
+                />
+              </Box>
+            )}
           </Box>
           <NisList
             list={result?.report}
             defaultRender={() => (
               <ResultView
                 report={result!.report}
-                includeHeadings={result!.options.operation !== "intersection"}
+                includeHeadings={isHeadingEnabled}
+                includeLineNumbers={isLineNumberEnabled}
               />
             )}
             emptyRender={EmptyOutputNis}
