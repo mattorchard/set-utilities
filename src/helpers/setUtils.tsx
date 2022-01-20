@@ -22,10 +22,14 @@ export const asDocument = (
   source: RunSource,
   options: RunOptions
 ): RunSourceDocument => {
+  const flags = options.ignoreCase ? "i" : "";
   const delimiter = options.delimiter || "\\s*\\n";
 
   const originals = source.content.split(new RegExp(parenthesize(delimiter)));
-  const delimiterRegex = new RegExp(delimiter);
+  const delimiterRegex = new RegExp(delimiter, flags);
+  const filterRegex = options.filter
+    ? new RegExp(options.filter, flags)
+    : new RegExp("");
   const segments: RunDocumentSegment[] = [];
 
   let lineNo = 1;
@@ -34,7 +38,7 @@ export const asDocument = (
     lineNo += getLineCount(original);
     const lineEnd = lineNo;
 
-    if (!delimiterRegex.test(original))
+    if (!delimiterRegex.test(original) && filterRegex.test(original))
       segments.push({
         lineStart,
         lineEnd,

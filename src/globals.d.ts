@@ -5,6 +5,7 @@ declare global {
     operation: RunOperation;
     ignoreWhitespace: boolean;
     ignoreCase: boolean;
+    filter: string | null;
     delimiter: string;
     minLength: number;
   }

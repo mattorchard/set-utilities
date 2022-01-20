@@ -18,7 +18,8 @@ interface OptionsFormProps {
 const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(true);
   const [ignoreCase, setIgnoreCase] = useState(true);
-  const [delimiter, setDelimiter] = useState("\\s*\\n");
+  const [filter, setFilter] = useState("");
+  const [delimiter, setDelimiter] = useState("\\n");
   const [minLength, setMinLength] = useState(1);
   const [operation, setOperation] = useState<RunOperation>("intersection");
 
@@ -29,8 +30,17 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
       delimiter,
       operation,
       minLength,
+      filter: filter || null,
     });
-  }, [onChange, ignoreWhitespace, ignoreCase, delimiter, minLength, operation]);
+  }, [
+    onChange,
+    ignoreWhitespace,
+    ignoreCase,
+    filter,
+    delimiter,
+    minLength,
+    operation,
+  ]);
 
   return (
     <fieldset className="options-form">
@@ -63,11 +73,22 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
       />
 
       <FormGroup>
+        <Typo large>Filter (Regex)</Typo>
+        <InputGroup
+          value={filter}
+          onChange={(e) => setFilter(e.currentTarget.value)}
+          style={{ maxWidth: 16 * 10 }}
+          placeholder="Any"
+        />
+      </FormGroup>
+
+      <FormGroup>
         <Typo large>Delimiter (Regex)</Typo>
         <InputGroup
           value={delimiter}
           onChange={(e) => setDelimiter(e.currentTarget.value)}
           style={{ maxWidth: 16 * 5 }}
+          placeholder="\n"
         />
       </FormGroup>
 
@@ -82,16 +103,7 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
         />
       </FormGroup>
 
-      <div
-        style={{
-          position: "absolute",
-          bottom: "1rem",
-          left: "50%",
-          right: "1rem",
-          opacity: 0.6,
-          pointerEvents: "none",
-        }}
-      >
+      <div className="options-form__diagram-container">
         <VennDiagram operation={operation} />
       </div>
     </fieldset>

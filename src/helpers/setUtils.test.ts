@@ -8,6 +8,7 @@ describe("as document", () => {
         delimiter: "\\r?\\n\\r?\\n",
         minLength: 1,
         operation: "intersection",
+        filter: null,
         ignoreCase: true,
         ignoreWhitespace: true,
       }
