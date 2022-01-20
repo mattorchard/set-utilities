@@ -25,6 +25,9 @@
     justify-items: center;
   }
 }
+.app-form__switches .bp4-switch {
+  margin-bottom: 2px;
+}
 
 ::-webkit-scrollbar {
   width: 8px;

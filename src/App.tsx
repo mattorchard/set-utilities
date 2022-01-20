@@ -60,7 +60,11 @@ const App = () => {
               Calculate
             </Button>
             {result && (
-              <Box ml="auto" flexDirection={"column"}>
+              <Box
+                ml="auto"
+                flexDirection="column"
+                className="app-form__switches"
+              >
                 <Switch
                   labelElement="Headings"
                   checked={isHeadingEnabled}
