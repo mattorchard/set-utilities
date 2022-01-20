@@ -16,7 +16,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
     [content, previewLength]
   );
   return (
-    <Typo as="p" className="file-preview" monospace style={{ marginBottom: 0 }}>
+    <Typo as="code" className="file-preview" monospace>
       {preview}
       {content.length > previewLength && "…"}
     </Typo>

@@ -2,5 +2,6 @@
   background-color: var(--dark-gray-1);
   border-radius: 3px;
   padding: 10px;
-  
+  overflow-x: auto;
+  white-space: pre-wrap;
 }
