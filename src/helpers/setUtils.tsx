@@ -88,7 +88,7 @@ const applyOperationToDocuments = (
     reportItem.results.push(runResults);
     results.set(combinedDocId, reportItem);
   }
-  return [...results.values()];
+  return [...results.values()].sort((a, b) => b.docs.length - a.docs.length);
 };
 
 export const applyOperationToSources = (
