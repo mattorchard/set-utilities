@@ -24,7 +24,7 @@ const ResultView: React.FC<ResultViewProps> = ({
     {report.map((reportItem) => (
       <Box as="li" flexDirection="column" key={reportItem.id} mb={32}>
         <h3 className="bp4-heading" hidden={!includeHeadings}>
-          Appears in{" "}
+          Appears in {reportItem.docs.length} sources{" "}
           <Typo muted>{reportItem.docs.map((doc) => doc.name).join(", ")}</Typo>
         </h3>
         <table className="result-view__table bp4-html-table bp4-html-tabl2e-bordered">
