@@ -24,7 +24,7 @@ const App = () => {
   const [result, setResult] = useState<Result | null>(null);
   const [outputViewOptions, setOutputViewOptions] = useState<OutputViewOptions>(
     {
-      isLineNumberEnabled: true,
+      isLineNumberEnabled: false,
       isHeadingEnabled: true,
     }
   );
