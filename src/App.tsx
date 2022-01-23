@@ -2,7 +2,7 @@ import React, { FormEvent, Fragment, useState } from "react";
 import "./App.css";
 import OptionsFieldSet from "./components/OptionsFieldSet";
 import SourcesFieldset from "./components/SourcesFieldset";
-import { applyOperationToSources } from "./helpers/setUtils";
+import { applyOperationToSources, applyReplacements } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
 import { NonIdealState } from "@blueprintjs/core";
@@ -11,6 +11,7 @@ import NisList from "./components/NisList";
 import OutputFieldset from "./components/OutputFieldset";
 import ReplacementsList from "./components/ReplacementsList";
 import DownloadMenuButton from "./components/DownloadMenuButton";
+import { asTextFile, downloadFile } from "./helpers/fileHelpers";
 
 interface Result {
   report: RunReportItem[];
@@ -31,6 +32,11 @@ const App = () => {
 
   const handleAddReplacement = (replacement: RunReplacement) =>
     setReplacements((r) => [replacement, ...r]);
+
+  const handleDownloadSources = (source: RunSource[]) =>
+    source
+      .map((source) => asTextFile(source.name, source.content))
+      .forEach((file) => downloadFile(file));
 
   const hasSufficientSources = sources && sources.length >= 2;
 
@@ -81,10 +87,16 @@ const App = () => {
         {replacements.length > 0 && (
           <AppSection stepNumber={4} heading="Replacements" isExpandEnabled>
             <DownloadMenuButton
-              // Todo: This
-              onDownloadAll={console.debug}
-              // Todo: This
-              onDownloadModified={console.debug}
+              onDownloadAll={() =>
+                handleDownloadSources(
+                  applyReplacements(sources!, options!, replacements, true)
+                )
+              }
+              onDownloadModified={() =>
+                handleDownloadSources(
+                  applyReplacements(sources!, options!, replacements, false)
+                )
+              }
             />
             <ReplacementsList
               replacements={replacements}

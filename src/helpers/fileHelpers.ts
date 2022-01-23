@@ -19,3 +19,8 @@ export const downloadFile = async (file: File) => {
     URL.revokeObjectURL(href);
   }
 };
+
+const hasFileExtension = (fileName: string) => /\.\w+/.test(fileName);
+
+export const asTextFile = (name: string, content: string): File =>
+  new File([content], hasFileExtension(name) ? name : `${name}.txt`);

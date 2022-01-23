@@ -1,4 +1,5 @@
 import { createId } from "./idHelpers";
+import { getCount, splitFilter } from "./arrayHelpers";
 
 const isOnlyWhitespace = (text: string) => !text || /^\s+$/.test(text);
 
@@ -16,20 +17,25 @@ const cleanLine = (original: string, options: RunOptions): string => {
 const parenthesize = (text: string) => `(${text})`;
 
 const getLineCount = (text: string) =>
-  [...text].filter((char) => char === "\n").length;
+  getCount([...text], (char) => char === "\n");
+
+const getOptionRegexes = (options: RunOptions) => {
+  const flags = options.ignoreCase ? "i" : "";
+  const delimiter = options.delimiter || "\\n";
+  const filter = options.filter || "";
+  return {
+    delimiter: new RegExp(delimiter, flags),
+    split: new RegExp(parenthesize(delimiter), flags),
+    filter: new RegExp(filter, flags),
+  };
+};
 
 export const asDocument = (
   source: RunSource,
   options: RunOptions
 ): RunSourceDocument => {
-  const flags = options.ignoreCase ? "i" : "";
-  const delimiter = options.delimiter || "\\s*\\n";
-
-  const originals = source.content.split(new RegExp(parenthesize(delimiter)));
-  const delimiterRegex = new RegExp(delimiter, flags);
-  const filterRegex = options.filter
-    ? new RegExp(options.filter, flags)
-    : new RegExp("");
+  const regexes = getOptionRegexes(options);
+  const originals = source.content.split(regexes.split);
   const segments: RunDocumentSegment[] = [];
 
   let lineNo = 1;
@@ -38,7 +44,7 @@ export const asDocument = (
     lineNo += getLineCount(original);
     const lineEnd = lineNo;
 
-    if (!delimiterRegex.test(original) && filterRegex.test(original))
+    if (!regexes.delimiter.test(original) && regexes.filter.test(original))
       segments.push({
         lineStart,
         lineEnd,
@@ -122,4 +128,50 @@ export const applyOperationToSources = (
         options.minLength
       );
   }
+};
+
+const applyReplacementsToSource = (
+  source: RunSource,
+  options: RunOptions,
+  replacementMap: Map<string, string>
+) => {
+  const regexes = getOptionRegexes(options);
+  const contentChunks = source.content.split(regexes.split).map((original) => {
+    if (regexes.delimiter.test(original)) {
+      return original;
+    }
+    const clean = cleanLine(original, options);
+    return replacementMap.get(clean) ?? original;
+  });
+
+  return {
+    ...source,
+    content: contentChunks.join(""),
+  };
+};
+
+export const applyReplacements = (
+  sources: RunSource[],
+  options: RunOptions,
+  replacements: RunReplacement[],
+  includeUnmodifiedFiles: boolean
+) => {
+  const modifiedDocIds = new Set(
+    replacements.flatMap((replacement) => replacement.docs.map((doc) => doc.id))
+  );
+
+  const { true: sourcesToModify, false: unmodifiedSources } = splitFilter(
+    sources,
+    (source) => modifiedDocIds.has(source.id)
+  );
+  const replacementMap = new Map(
+    replacements.map((r) => [r.results[0].segments[0].clean, r.replacement])
+  );
+  const modifiedSources = sourcesToModify.map((source) =>
+    applyReplacementsToSource(source, options, replacementMap)
+  );
+
+  return includeUnmodifiedFiles
+    ? [...modifiedSources, ...unmodifiedSources]
+    : modifiedSources;
 };
