@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { getFileContents } from "../helpers/fileHelpers";
 import { createId } from "../helpers/idHelpers";
 import { Button, Icon, NonIdealState, TextArea } from "@blueprintjs/core";
 import FilePreview from "./FilePreview";
 import Box from "./Box";
 import Typo from "./Typo";
+import { useFileDrop } from "../hooks/useFileDrop";
 
 interface SourcesFieldsetProps {
   sources: RunSource[];
@@ -42,22 +43,27 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
       },
     ]);
 
-  const handleAddFiles = async (files: File[]) => {
-    try {
-      setIsReadingFiles(true);
-      const fileContents = await Promise.all(files.map(getFileContents));
-      onAddSources(
-        fileContents.map((content, index) => ({
-          content,
-          name: files[index].name,
-          id: createId(),
-          type: "file",
-        }))
-      );
-    } finally {
-      setIsReadingFiles(false);
-    }
-  };
+  const handleAddFiles = useCallback(
+    async (files: File[]) => {
+      try {
+        setIsReadingFiles(true);
+        const fileContents = await Promise.all(files.map(getFileContents));
+        onAddSources(
+          fileContents.map((content, index) => ({
+            content,
+            name: files[index].name,
+            id: createId(),
+            type: "file",
+          }))
+        );
+      } finally {
+        setIsReadingFiles(false);
+      }
+    },
+    [onAddSources]
+  );
+
+  useFileDrop(handleAddFiles);
 
   const handleFilesSelected = async () => {
     const input = fileInputRef.current;
