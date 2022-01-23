@@ -10,7 +10,7 @@ const emptyBundle: Bundle = {
     ignoreWhitespace: true,
     ignoreCase: true,
     filter: null,
-    delimiter: "\n",
+    delimiter: "\\n",
     minLength: 1,
   },
 };
