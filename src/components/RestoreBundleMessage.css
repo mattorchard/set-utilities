@@ -1,0 +1,11 @@
+.restore-bundle-message {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  width: max-content;
+  transition: transform .5s ease-in-out;
+  transform: translateY(0) translateX(-50%);
+}
+.restore-bundle-message--hidden {
+  transform: translateY(200%) translateX(-50%);
+}

@@ -16,6 +16,9 @@ declare global {
     name: string;
     content: string;
   }
+
+  type RunSourceChange = Partial<RunSource> & Pick<RunSource, "id">;
+
   interface RunDocumentSegment {
     lineStart: number;
     lineEnd: number;
@@ -49,6 +52,11 @@ declare global {
     docs: RunSourceDocument[];
     results: RunResult[];
     replacement: string;
+  }
+  interface Bundle {
+    sources: RunSource[];
+    options: RunOptions;
+    replacements: RunReplacement[];
   }
 }
 

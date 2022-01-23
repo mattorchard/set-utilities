@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { getFileContents } from "../helpers/fileHelpers";
 import { createId } from "../helpers/idHelpers";
 import { Button, Icon, NonIdealState, TextArea } from "@blueprintjs/core";
@@ -7,7 +7,10 @@ import Box from "./Box";
 import Typo from "./Typo";
 
 interface SourcesFieldsetProps {
-  onChange: (source: RunSource[]) => void;
+  sources: RunSource[];
+  onAddSources: (sources: RunSource[]) => void;
+  onRemoveSource: (id: string) => void;
+  onSourceChange: (source: RunSourceChange) => void;
 }
 
 const getFirstUnusedName = (sources: RunSource[]): string => {
@@ -20,44 +23,37 @@ const getFirstUnusedName = (sources: RunSource[]): string => {
   return `Source ${highestSourceName + 1}`;
 };
 
-const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
+const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
+  sources,
+  onAddSources,
+  onRemoveSource,
+  onSourceChange,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(undefined!);
   const [isReadingFile, setIsReadingFiles] = useState(false);
-  const [sources, setSources] = useState<RunSource[]>([]);
-
-  useEffect(() => {
-    onChange(sources);
-  }, [onChange, sources]);
-
-  const handleRemoveSource = (idToRemove: string) =>
-    setSources((sources) =>
-      sources.filter((source) => source.id !== idToRemove)
-    );
 
   const handleAddRawSource = () =>
-    setSources((sources) => [
+    onAddSources([
       {
         id: createId(),
         name: getFirstUnusedName(sources),
         content: "",
         type: "raw",
       },
-      ...sources,
     ]);
 
   const handleAddFiles = async (files: File[]) => {
     try {
       setIsReadingFiles(true);
       const fileContents = await Promise.all(files.map(getFileContents));
-      const newFileSources: RunSource[] = fileContents.map(
-        (content, index) => ({
+      onAddSources(
+        fileContents.map((content, index) => ({
           content,
           name: files[index].name,
           id: createId(),
           type: "file",
-        })
+        }))
       );
-      setSources((existingSources) => [...newFileSources, ...existingSources]);
     } finally {
       setIsReadingFiles(false);
     }
@@ -70,17 +66,6 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
     input.value = "";
     await handleAddFiles(files);
   };
-
-  const handleEditSourceName = (id: string, name: string) =>
-    setSources((sources) =>
-      sources.map((source) => (source.id === id ? { ...source, name } : source))
-    );
-  const handleEditSourceContent = (id: string, content: string) =>
-    setSources((sources) =>
-      sources.map((source) =>
-        source.id === id ? { ...source, content } : source
-      )
-    );
 
   return (
     <fieldset>
@@ -114,7 +99,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
             flexDirection="column"
             className="illuminate"
           >
-            <SourceHeader onRemove={() => handleRemoveSource(source.id)}>
+            <Box my={4} justifyContent="space-between">
               {source.type === "file" ? (
                 <Typo large>
                   <strong>{source.name}</strong>
@@ -127,11 +112,24 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
                   placeholder="Source Name"
                   defaultValue={source.name}
                   onBlur={(event) =>
-                    handleEditSourceName(source.id, event.currentTarget.value)
+                    onSourceChange({
+                      id: source.id,
+                      name: event.currentTarget.value,
+                    })
                   }
                 />
               )}
-            </SourceHeader>
+              <Button
+                type="button"
+                onClick={() => onRemoveSource(source.id)}
+                intent="danger"
+                minimal
+                icon={<Icon icon="delete" intent="primary" />}
+              >
+                Remove
+              </Button>
+            </Box>
+
             {source.type === "file" ? (
               <FilePreview content={source.content} />
             ) : (
@@ -141,8 +139,12 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
                 fill
                 placeholder="Lorem ipsum"
                 style={{ resize: "vertical" }}
+                defaultValue={source.content}
                 onBlur={(event) =>
-                  handleEditSourceContent(source.id, event.currentTarget.value)
+                  onSourceChange({
+                    id: source.id,
+                    content: event.currentTarget.value,
+                  })
                 }
               />
             )}
@@ -169,22 +171,5 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
     </fieldset>
   );
 };
-
-const SourceHeader: React.FC<{
-  onRemove: () => void;
-}> = ({ onRemove, children }) => (
-  <Box my={4} justifyContent="space-between">
-    {children}
-    <Button
-      type="button"
-      onClick={onRemove}
-      intent="danger"
-      minimal
-      icon={<Icon icon="delete" intent="primary" />}
-    >
-      Remove
-    </Button>
-  </Box>
-);
 
 export default SourcesFieldset;

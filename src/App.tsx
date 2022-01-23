@@ -12,6 +12,8 @@ import OutputFieldset from "./components/OutputFieldset";
 import ReplacementsList from "./components/ReplacementsList";
 import DownloadMenuButton from "./components/DownloadMenuButton";
 import { asTextFile, downloadFile } from "./helpers/fileHelpers";
+import { useBundle } from "./hooks/useBundle";
+import RestoreBundleMessage from "./components/RestoreBundleMessage";
 
 interface Result {
   report: RunReportItem[];
@@ -19,8 +21,21 @@ interface Result {
 }
 
 const App = () => {
-  const [sources, setSources] = useState<RunSource[] | null>(null);
-  const [options, setOptions] = useState<RunOptions | null>(null);
+  const {
+    sources,
+    options,
+    replacements,
+    isRestoreEnabled,
+    restoreLastBundle,
+    dismissLastBundle,
+    addSources,
+    removeSource,
+    editSource,
+    addReplacement,
+    setOptions,
+    setReplacements,
+  } = useBundle();
+
   const [result, setResult] = useState<Result | null>(null);
   const [outputViewOptions, setOutputViewOptions] = useState<OutputViewOptions>(
     {
@@ -28,10 +43,6 @@ const App = () => {
       isHeadingEnabled: true,
     }
   );
-  const [replacements, setReplacements] = useState<RunReplacement[]>([]);
-
-  const handleAddReplacement = (replacement: RunReplacement) =>
-    setReplacements((r) => [replacement, ...r]);
 
   const handleDownloadSources = (source: RunSource[]) =>
     source
@@ -58,14 +69,19 @@ const App = () => {
       >
         <div className="bumper" />
         <AppSection stepNumber={1} heading="Sources">
-          <SourcesFieldset onChange={setSources} />
+          <SourcesFieldset
+            sources={sources}
+            onAddSources={addSources}
+            onRemoveSource={removeSource}
+            onSourceChange={editSource}
+          />
         </AppSection>
         <AppSection stepNumber={2} heading="Options">
-          <OptionsFieldSet onChange={setOptions} />
+          <OptionsFieldSet options={options} onChange={setOptions} />
         </AppSection>
         <AppSection stepNumber={3} heading="Results" isExpandEnabled>
           <OutputFieldset
-            isSubmitEnabled={!!hasSufficientSources}
+            isSubmitEnabled={hasSufficientSources}
             hasOutput={!!result}
             options={outputViewOptions}
             onOptionsChanged={setOutputViewOptions}
@@ -77,7 +93,7 @@ const App = () => {
                 report={result!.report}
                 includeHeadings={outputViewOptions.isHeadingEnabled}
                 includeLineNumbers={outputViewOptions.isLineNumberEnabled}
-                onAddReplacement={handleAddReplacement}
+                onAddReplacement={addReplacement}
               />
             )}
             emptyRender={EmptyOutputNis}
@@ -106,6 +122,13 @@ const App = () => {
         )}
         <div className="bumper" />
       </form>
+
+      <RestoreBundleMessage
+        isEnabled={isRestoreEnabled}
+        onRestore={restoreLastBundle}
+        onDismiss={dismissLastBundle}
+      />
+
       <CssColorVariableStyle />
     </Fragment>
   );

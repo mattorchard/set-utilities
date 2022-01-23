@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   FormGroup,
   InputGroup,
@@ -12,35 +12,19 @@ import VennDiagram from "./VennDiagram";
 import "./OptionsFieldset.css";
 
 interface OptionsFormProps {
-  onChange: (options: RunOptions) => void;
+  options: RunOptions;
+  onChange: (options: Partial<RunOptions>) => void;
 }
 
-const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
-  const [ignoreWhitespace, setIgnoreWhitespace] = useState(true);
-  const [ignoreCase, setIgnoreCase] = useState(true);
-  const [filter, setFilter] = useState("");
-  const [delimiter, setDelimiter] = useState("\\n");
-  const [minLength, setMinLength] = useState(1);
-  const [operation, setOperation] = useState<RunOperation>("intersection");
-
-  useEffect(() => {
-    onChange({
-      ignoreWhitespace,
-      ignoreCase,
-      delimiter,
-      operation,
-      minLength,
-      filter: filter || null,
-    });
-  }, [
-    onChange,
+const OptionsFieldSet: React.FC<OptionsFormProps> = ({ options, onChange }) => {
+  const {
     ignoreWhitespace,
     ignoreCase,
     filter,
     delimiter,
     minLength,
     operation,
-  ]);
+  } = options;
 
   return (
     <fieldset className="options-form">
@@ -51,7 +35,9 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
           </Typo>
         }
         selectedValue={operation}
-        onChange={(e) => setOperation(e.currentTarget.value as RunOperation)}
+        onChange={(e) =>
+          onChange({ operation: e.currentTarget.value as RunOperation })
+        }
         name="operation"
         inline
       >
@@ -63,20 +49,22 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
       <Switch
         label="Ignore Whitespace"
         checked={ignoreWhitespace}
-        onChange={(e) => setIgnoreWhitespace(e.currentTarget.checked)}
+        onChange={(e) =>
+          onChange({ ignoreWhitespace: e.currentTarget.checked })
+        }
       />
 
       <Switch
         label="Ignore Case"
         checked={ignoreCase}
-        onChange={(e) => setIgnoreCase(e.currentTarget.checked)}
+        onChange={(e) => onChange({ ignoreCase: e.currentTarget.checked })}
       />
 
       <FormGroup>
         <Typo large>Filter (Regex)</Typo>
         <InputGroup
-          value={filter}
-          onChange={(e) => setFilter(e.currentTarget.value)}
+          value={filter || ""}
+          onChange={(e) => onChange({ filter: e.currentTarget.value || null })}
           style={{ maxWidth: 16 * 10 }}
           placeholder="Any"
         />
@@ -86,7 +74,7 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
         <Typo large>Delimiter (Regex)</Typo>
         <InputGroup
           value={delimiter}
-          onChange={(e) => setDelimiter(e.currentTarget.value)}
+          onChange={(e) => onChange({ delimiter: e.currentTarget.value })}
           style={{ maxWidth: 16 * 5 }}
           placeholder="\n"
         />
@@ -97,8 +85,8 @@ const OptionsFieldSet: React.FC<OptionsFormProps> = ({ onChange }) => {
         <NumericInput
           min={0}
           stepSize={1}
-          defaultValue="1"
-          onValueChange={(minLength) => setMinLength(minLength)}
+          value={minLength}
+          onValueChange={(minLength) => onChange({ minLength })}
           style={{ maxWidth: 16 * 3 }}
         />
       </FormGroup>

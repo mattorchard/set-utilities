@@ -46,7 +46,9 @@ const ReplacementsList: React.FC<ReplacementsListProps> = ({
             {replacement.results[0].preview}
           </Typo>
           <TallTextArea
-            defaultValue={replacement.results[0].preview}
+            defaultValue={
+              replacement.replacement || replacement.results[0].preview
+            }
             aria-label="Replacement text"
             fill
             placeholder="Replacement text"
