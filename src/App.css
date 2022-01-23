@@ -7,26 +7,41 @@
 }
 
 .app__form {
-  transition: grid-template-columns 1s ease-in-out;
-  margin: 0 auto;
-  display: grid;
   grid-template-columns: 1fr repeat(3, min-content) 1fr;
+  display: grid;
   grid-gap: 32px;
   padding: 16px 0;
   height: 100vh;
   align-items: flex-start;
   overflow-y: hidden;
 }
+.app__form--with-replacements {
+  grid-template-columns: 1fr repeat(4, min-content) 1fr;
+}
 @media only screen and (max-width: calc(400px * 3 + 32px * 4)) {
   .app__form {
     height: unset;
     grid-template-columns: unset;
-    grid-template-rows: 1fr repeat(3, min-content) 1fr;
     justify-items: center;
   }
 }
-.app-form__switches .bp4-switch {
-  margin-bottom: 2px;
+.bp4-dark button.bp4-button.button--special {
+  background-color: var(--indigo-2);
+}
+
+.bp4-dark button.bp4-button.button--special:hover {
+  background-color: var(--indigo-1);
+}
+@keyframes illuminate {
+  from {
+    filter: drop-shadow(0 0 1rem #ffffff80)
+  }
+  to {
+    filter: none;
+  }
+}
+.illuminate {
+  animation: illuminate .5s ease-in-out 1 forwards;
 }
 
 ::-webkit-scrollbar {

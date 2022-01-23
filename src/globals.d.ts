@@ -27,15 +27,28 @@ declare global {
   }
 
   interface RunResult {
+    id: string;
     doc: RunSourceDocument;
     segments: RunDocumentSegment[];
-    id: string;
+    preview: string;
   }
   interface RunReportItem {
     id: string;
     combinedDocId: string;
     docs: RunSourceDocument[];
     results: RunResult[][];
+  }
+
+  interface OutputViewOptions {
+    isHeadingEnabled: boolean;
+    isLineNumberEnabled: boolean;
+  }
+
+  interface RunReplacement {
+    id: string;
+    docs: RunSourceDocument[];
+    results: RunResult[];
+    replacement: string;
   }
 }
 

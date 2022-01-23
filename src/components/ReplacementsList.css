@@ -1,0 +1,22 @@
+.replacements-list__item {
+  margin-bottom: 1rem;
+  overflow-x: hidden;
+}
+.replacements-list__item__old {
+  padding: 10px;
+  background-color: var(--dark-gray-1);
+  border-left: .5rem solid var(--red-1);
+  text-decoration: line-through;
+  text-decoration-color: currentColor;
+  transition: text-decoration-color .25s ease-in-out;
+}
+.replacements-list__item__old:hover {
+  text-decoration-color: transparent;
+}
+textarea.replacements-list__item__new.bp4-input {
+  border-left: .5rem solid var(--green-1);
+  background-color: var(--dark-gray-1);
+  border-radius: 0;
+  resize: vertical;
+  box-shadow: none;
+}

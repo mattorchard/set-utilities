@@ -2,6 +2,10 @@
   "name": "set-utilities",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -18,7 +22,8 @@
     "prettier": "^2.5.1",
     "uuid": "^8.3.2",
     "@types/uuid": "^8.3.4",
-    "@blueprintjs/core": "^4.0.0-beta.12"
+    "@blueprintjs/core": "^4.0.0-beta.10",
+    "@blueprintjs/popover2": "^1.0.0-beta.10"
   },
   "overrides": {
     "mini-css-extract-plugin": "2.4.5"
@@ -29,8 +34,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [

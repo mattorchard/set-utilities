@@ -89,7 +89,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
           onClick={() => fileInputRef.current.click()}
           loading={isReadingFile}
           icon={<Icon icon="folder-new" />}
-          intent="primary"
+          intent={sources.length >= 2 ? "none" : "primary"}
           large
         >
           Add File
@@ -99,7 +99,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
         <Button
           onClick={handleAddRawSource}
           icon={<Icon icon="new-text-box" />}
-          intent="primary"
+          intent={sources.length >= 2 ? "none" : "primary"}
           large
         >
           Add Text
@@ -107,7 +107,13 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({ onChange }) => {
       </Box>
       <ul className="non-list">
         {sources.map((source) => (
-          <Box key={source.id} as="li" mb={16} flexDirection="column">
+          <Box
+            key={source.id}
+            as="li"
+            mb={16}
+            flexDirection="column"
+            className="illuminate"
+          >
             <SourceHeader onRemove={() => handleRemoveSource(source.id)}>
               {source.type === "file" ? (
                 <Typo large>

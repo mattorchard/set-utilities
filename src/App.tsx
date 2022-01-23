@@ -5,10 +5,12 @@ import SourcesFieldset from "./components/SourcesFieldset";
 import { applyOperationToSources } from "./helpers/setUtils";
 import ResultView from "./components/ResultView";
 import CssColorVariableStyle from "./components/CssColorVariableStyle";
-import { Button, Icon, NonIdealState, Switch } from "@blueprintjs/core";
+import { NonIdealState } from "@blueprintjs/core";
 import AppSection from "./components/AppSection";
 import NisList from "./components/NisList";
-import Box from "./components/Box";
+import OutputFieldset from "./components/OutputFieldset";
+import ReplacementsList from "./components/ReplacementsList";
+import DownloadMenuButton from "./components/DownloadMenuButton";
 
 interface Result {
   report: RunReportItem[];
@@ -19,23 +21,35 @@ const App = () => {
   const [sources, setSources] = useState<RunSource[] | null>(null);
   const [options, setOptions] = useState<RunOptions | null>(null);
   const [result, setResult] = useState<Result | null>(null);
-  const [isHeadingEnabled, setIsHeadingEnabled] = useState(true);
-  const [isLineNumberEnabled, setIsLineNumberEnabled] = useState(true);
+  const [outputViewOptions, setOutputViewOptions] = useState<OutputViewOptions>(
+    {
+      isLineNumberEnabled: true,
+      isHeadingEnabled: true,
+    }
+  );
+  const [replacements, setReplacements] = useState<RunReplacement[]>([]);
+
+  const handleAddReplacement = (replacement: RunReplacement) =>
+    setReplacements((r) => [replacement, ...r]);
 
   const hasSufficientSources = sources && sources.length >= 2;
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!options || !sources) return;
-    console.log("Getting a result", { options, sources });
     const report = applyOperationToSources(sources, options);
     console.log("Got report", report);
     setResult({ report, options });
-    if (options.operation === "intersection") setIsHeadingEnabled(false);
   };
   return (
     <Fragment>
-      <form className="bp4-dark app__form" onSubmit={handleSubmit}>
+      <form
+        className={`app__form ${
+          replacements.length > 0 && "app__form--with-replacements"
+        }`}
+        onSubmit={handleSubmit}
+        data-scroll-container={true}
+      >
         <div className="bumper" />
         <AppSection stepNumber={1} heading="Sources">
           <SourcesFieldset onChange={setSources} />
@@ -43,56 +57,41 @@ const App = () => {
         <AppSection stepNumber={2} heading="Options">
           <OptionsFieldSet onChange={setOptions} />
         </AppSection>
-        <AppSection stepNumber={3} heading="Output" isExpandEnabled>
-          <Box mb={8} alignItems="start">
-            <Button
-              style={{ backgroundColor: `var(--indigo-2)` }}
-              large
-              type="submit"
-              disabled={!hasSufficientSources}
-              icon={<Icon icon="tick-circle" />}
-              title={
-                hasSufficientSources
-                  ? ""
-                  : "You must have at least two sources to compare"
-              }
-            >
-              Calculate
-            </Button>
-            {result && (
-              <Box
-                ml="auto"
-                flexDirection="column"
-                className="app-form__switches"
-              >
-                <Switch
-                  labelElement="Headings"
-                  checked={isHeadingEnabled}
-                  onChange={(e) => setIsHeadingEnabled(e.currentTarget.checked)}
-                />
-                <Switch
-                  labelElement="Line №"
-                  checked={isLineNumberEnabled}
-                  onChange={(e) =>
-                    setIsLineNumberEnabled(e.currentTarget.checked)
-                  }
-                />
-              </Box>
-            )}
-          </Box>
+        <AppSection stepNumber={3} heading="Results" isExpandEnabled>
+          <OutputFieldset
+            isSubmitEnabled={!!hasSufficientSources}
+            hasOutput={!!result}
+            options={outputViewOptions}
+            onOptionsChanged={setOutputViewOptions}
+          />
           <NisList
             list={result?.report}
             defaultRender={() => (
               <ResultView
                 report={result!.report}
-                includeHeadings={isHeadingEnabled}
-                includeLineNumbers={isLineNumberEnabled}
+                includeHeadings={outputViewOptions.isHeadingEnabled}
+                includeLineNumbers={outputViewOptions.isLineNumberEnabled}
+                onAddReplacement={handleAddReplacement}
               />
             )}
             emptyRender={EmptyOutputNis}
             nonListRender={NoOutputNis}
           />
         </AppSection>
+        {replacements.length > 0 && (
+          <AppSection stepNumber={4} heading="Replacements" isExpandEnabled>
+            <DownloadMenuButton
+              // Todo: This
+              onDownloadAll={console.debug}
+              // Todo: This
+              onDownloadModified={console.debug}
+            />
+            <ReplacementsList
+              replacements={replacements}
+              onReplacementsChange={setReplacements}
+            />
+          </AppSection>
+        )}
         <div className="bumper" />
       </form>
       <CssColorVariableStyle />

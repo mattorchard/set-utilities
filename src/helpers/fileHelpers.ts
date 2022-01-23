@@ -7,3 +7,15 @@ export const getFileContents = async (blob: Blob): Promise<string> => {
     reader.readAsText(blob);
   });
 };
+
+export const downloadFile = async (file: File) => {
+  const href = URL.createObjectURL(file);
+  try {
+    const anchor = document.createElement("a");
+    anchor.setAttribute("download", file.name);
+    anchor.setAttribute("href", href);
+    anchor.click();
+  } finally {
+    URL.revokeObjectURL(href);
+  }
+};

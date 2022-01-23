@@ -9,7 +9,7 @@ import {
 } from "@blueprintjs/core";
 import Typo from "./Typo";
 import VennDiagram from "./VennDiagram";
-import "./OptionsForm.css";
+import "./OptionsFieldset.css";
 
 interface OptionsFormProps {
   onChange: (options: RunOptions) => void;
