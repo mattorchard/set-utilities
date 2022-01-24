@@ -73,7 +73,7 @@ const applyOperationToDocuments = (
         doc,
         segments: [],
         id: createId(),
-        preview: segment.original,
+        preview: segment.original.trim(),
       };
       intermediateMatch.segments.push(segment);
       docsLineSeenIn.set(doc.id, intermediateMatch);
