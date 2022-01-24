@@ -15,6 +15,7 @@ declare global {
     type: "raw" | "file";
     name: string;
     content: string;
+    handle?: FileSystemFileHandle;
   }
 
   type RunSourceChange = Partial<RunSource> & Pick<RunSource, "id">;

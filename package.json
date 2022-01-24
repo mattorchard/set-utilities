@@ -24,7 +24,8 @@
     "@types/uuid": "^8.3.4",
     "@blueprintjs/core": "^4.0.0-beta.10",
     "@blueprintjs/popover2": "^1.0.0-beta.10",
-    "idb": "^7.0.0"
+    "idb": "^7.0.0",
+    "@types/wicg-file-system-access": "^2020.9.4"
   },
   "overrides": {
     "mini-css-extract-plugin": "2.4.5"

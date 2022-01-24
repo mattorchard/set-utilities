@@ -24,3 +24,15 @@ const hasFileExtension = (fileName: string) => /\.\w+/.test(fileName);
 
 export const asTextFile = (name: string, content: string): File =>
   new File([content], hasFileExtension(name) ? name : `${name}.txt`);
+
+export const overwriteFile = async (
+  handle: FileSystemFileHandle,
+  content: string
+) => {
+  const writable = await handle.createWritable();
+  try {
+    await writable.write(content);
+  } finally {
+    await writable.close();
+  }
+};

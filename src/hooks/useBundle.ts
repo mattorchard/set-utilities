@@ -20,6 +20,10 @@ const saveBundleDebounced = debounce(BundleRepository.saveLastBundle, 500);
 export const useBundle = () => {
   const [bundle, setBundle] = useState<Bundle>(emptyBundle);
   const [lastBundle, setLastBundle] = useState<Bundle | null>(null);
+  const isSaveInPlaceEnabled = useMemo(
+    () => bundle.sources.every((bundle) => bundle.handle),
+    [bundle.sources]
+  );
 
   useEffect(() => {
     BundleRepository.getLastBundle().then(setLastBundle);
@@ -72,6 +76,7 @@ export const useBundle = () => {
   return {
     ...bundle,
     ...actions,
+    isSaveInPlaceEnabled,
     isRestoreEnabled: !!lastBundle,
     restoreLastBundle,
     dismissLastBundle,

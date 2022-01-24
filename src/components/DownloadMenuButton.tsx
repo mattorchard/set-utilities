@@ -3,11 +3,15 @@ import { Button, Menu, MenuItem } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2";
 
 interface DownloadMenuButtonProps {
+  onSaveInPlace: () => void;
+  isSaveInPlaceEnabled: boolean;
   onDownloadAll: () => void;
   onDownloadModified: () => void;
 }
 
 const DownloadMenuButton: React.FC<DownloadMenuButtonProps> = ({
+  isSaveInPlaceEnabled,
+  onSaveInPlace,
   onDownloadAll,
   onDownloadModified,
 }) => (
@@ -15,6 +19,13 @@ const DownloadMenuButton: React.FC<DownloadMenuButtonProps> = ({
     placement="bottom"
     content={
       <Menu>
+        {isSaveInPlaceEnabled && (
+          <MenuItem
+            text="Save over originals"
+            icon="floppy-disk"
+            onClick={onSaveInPlace}
+          />
+        )}
         <MenuItem
           text="All Sources"
           icon="multi-select"

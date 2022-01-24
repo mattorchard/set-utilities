@@ -65,6 +65,36 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
 
   useFileDrop(handleAddFiles);
 
+  const handleClickAddFile = async () => {
+    if (!("showOpenFilePicker" in window)) {
+      fileInputRef.current.click();
+      return;
+    }
+    try {
+      setIsReadingFiles(true);
+      const handles = await showOpenFilePicker({
+        multiple: true,
+      });
+      const fileHandles = handles.filter((handle) => handle.kind === "file");
+      const fileContents = await Promise.all(
+        fileHandles.map(
+          async (handle) => await getFileContents(await handle.getFile())
+        )
+      );
+      onAddSources(
+        fileContents.map((content, index) => ({
+          content,
+          name: fileHandles[index].name,
+          handle: fileHandles[index],
+          id: createId(),
+          type: "file",
+        }))
+      );
+    } finally {
+      setIsReadingFiles(false);
+    }
+  };
+
   const handleFilesSelected = async () => {
     const input = fileInputRef.current;
     if (!input || !input.files || !input.files.length) return;
@@ -77,7 +107,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
     <fieldset>
       <Box mr={8} inline mb={8}>
         <Button
-          onClick={() => fileInputRef.current.click()}
+          onClick={handleClickAddFile}
           loading={isReadingFile}
           icon={<Icon icon="folder-new" />}
           intent={sources.length >= 2 ? "none" : "primary"}

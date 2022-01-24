@@ -11,7 +11,7 @@ import NisList from "./components/NisList";
 import OutputFieldset from "./components/OutputFieldset";
 import ReplacementsList from "./components/ReplacementsList";
 import DownloadMenuButton from "./components/DownloadMenuButton";
-import { asTextFile, downloadFile } from "./helpers/fileHelpers";
+import { asTextFile, downloadFile, overwriteFile } from "./helpers/fileHelpers";
 import { useBundle } from "./hooks/useBundle";
 import RestoreBundleMessage from "./components/RestoreBundleMessage";
 
@@ -28,6 +28,7 @@ const App = () => {
     isRestoreEnabled,
     restoreLastBundle,
     dismissLastBundle,
+    isSaveInPlaceEnabled,
     addSources,
     removeSource,
     editSource,
@@ -44,10 +45,17 @@ const App = () => {
     }
   );
 
-  const handleDownloadSources = (source: RunSource[]) =>
-    source
+  const handleDownloadSources = (sources: RunSource[]) =>
+    sources
       .map((source) => asTextFile(source.name, source.content))
       .forEach((file) => downloadFile(file));
+
+  const handleSaveInPlace = (sources: RunSource[]) =>
+    Promise.all(
+      sources
+        .filter((source) => source.handle)
+        .map((source) => overwriteFile(source.handle!, source.content))
+    );
 
   const hasSufficientSources = sources && sources.length >= 2;
 
@@ -103,6 +111,12 @@ const App = () => {
         {replacements.length > 0 && (
           <AppSection stepNumber={4} heading="Replacements" isExpandEnabled>
             <DownloadMenuButton
+              isSaveInPlaceEnabled={isSaveInPlaceEnabled}
+              onSaveInPlace={() =>
+                handleSaveInPlace(
+                  applyReplacements(sources!, options!, replacements, false)
+                )
+              }
               onDownloadAll={() =>
                 handleDownloadSources(
                   applyReplacements(sources!, options!, replacements, true)
