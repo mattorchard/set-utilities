@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { getFileContents } from "../helpers/fileHelpers";
 import { createId } from "../helpers/idHelpers";
 import { Button, Icon, NonIdealState, TextArea } from "@blueprintjs/core";
+import { Tooltip2 as Tooltip } from "@blueprintjs/popover2";
 import FilePreview from "./FilePreview";
 import Box from "./Box";
 import Typo from "./Typo";
@@ -32,6 +33,12 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(undefined!);
   const [isReadingFile, setIsReadingFiles] = useState(false);
+  const [refreshPressed, setRefreshPressed] = useState(false);
+
+  const sourceWithHandleCount = useMemo(
+    () => sources.filter((source) => source.handle).length,
+    [sources]
+  );
 
   const handleAddRawSource = () =>
     onAddSources([
@@ -43,7 +50,7 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
       },
     ]);
 
-  const handleAddFiles = useCallback(
+  const addFilesWithoutHandles = useCallback(
     async (files: File[]) => {
       try {
         setIsReadingFiles(true);
@@ -63,13 +70,9 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
     [onAddSources]
   );
 
-  useFileDrop(handleAddFiles);
+  useFileDrop(addFilesWithoutHandles);
 
-  const handleClickAddFile = async () => {
-    if (!("showOpenFilePicker" in window)) {
-      fileInputRef.current.click();
-      return;
-    }
+  const addFilesWithHandles = async () => {
     try {
       setIsReadingFiles(true);
       const handles = await showOpenFilePicker({
@@ -95,37 +98,83 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
     }
   };
 
+  const handleRefreshFromHandles = async () => {
+    try {
+      setRefreshPressed(true);
+      setIsReadingFiles(true);
+      await Promise.all(
+        sources
+          .filter((s) => s.handle)
+          .map(async ({ id, handle }) => {
+            await handle!.requestPermission({ mode: "read" });
+            const content = await getFileContents(await handle!.getFile());
+            onSourceChange({ id, content });
+          })
+      );
+    } finally {
+      setIsReadingFiles(false);
+    }
+  };
+
+  const handleClickAddFile = async () => {
+    if ("showOpenFilePicker" in window) {
+      await addFilesWithHandles();
+    } else {
+      // Fall back to hidden file input
+      fileInputRef.current.click();
+    }
+  };
+
   const handleFilesSelected = async () => {
     const input = fileInputRef.current;
     if (!input || !input.files || !input.files.length) return;
     const files = [...input.files];
     input.value = "";
-    await handleAddFiles(files);
+    await addFilesWithoutHandles(files);
   };
 
   return (
     <fieldset>
-      <Box mr={8} inline mb={8}>
-        <Button
-          onClick={handleClickAddFile}
-          loading={isReadingFile}
-          icon={<Icon icon="folder-new" />}
-          intent={sources.length >= 2 ? "none" : "primary"}
-          large
-        >
-          Add File
-        </Button>
+      <Box mb={8}>
+        <Box>
+          <Button
+            onClick={handleClickAddFile}
+            loading={isReadingFile}
+            icon={<Icon icon="folder-new" />}
+            intent={sources.length >= 2 ? "none" : "primary"}
+            large
+          >
+            Add File
+          </Button>
+        </Box>
+        <Box ml={8}>
+          <Button
+            onClick={handleAddRawSource}
+            icon={<Icon icon="new-text-box" />}
+            intent={sources.length >= 2 ? "none" : "primary"}
+            large
+          >
+            Add Text
+          </Button>
+        </Box>
+        {sourceWithHandleCount > 0 && (
+          <Box ml="auto">
+            <Tooltip
+              content={`Reload ${sourceWithHandleCount} connected sources`}
+            >
+              <Button
+                icon={<Icon icon="refresh" />}
+                large
+                minimal
+                aria-label="Refresh"
+                onClick={handleRefreshFromHandles}
+                loading={isReadingFile}
+              />
+            </Tooltip>
+          </Box>
+        )}
       </Box>
-      <Box inline mb={8}>
-        <Button
-          onClick={handleAddRawSource}
-          icon={<Icon icon="new-text-box" />}
-          intent={sources.length >= 2 ? "none" : "primary"}
-          large
-        >
-          Add Text
-        </Button>
-      </Box>
+
       <ul className="non-list">
         {sources.map((source) => (
           <Box
@@ -167,7 +216,12 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
             </Box>
 
             {source.type === "file" ? (
-              <FilePreview content={source.content} />
+              <Box flexDirection="column">
+                <FilePreview content={source.content} />
+                {refreshPressed && !source.handle && (
+                  <Typo small>This source cannot be refreshed.</Typo>
+                )}
+              </Box>
             ) : (
               <TextArea
                 aria-label="Content"
