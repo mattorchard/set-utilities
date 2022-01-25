@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Box from "./Box";
 import CircleDot from "./CircleDot";
 import { Button, Icon } from "@blueprintjs/core";
 import { Tooltip2 as Tooltip } from "@blueprintjs/popover2";
 import "./AppSection.css";
-import { duringAnimation } from "../helpers/animationHelpers";
 
 interface AppSectionProps {
   stepNumber: number;
@@ -18,30 +17,31 @@ const AppSection: React.FC<AppSectionProps> = ({
   heading,
   children,
   isExpandEnabled = false,
-  scrollOffset = 32,
 }) => {
+  const ref = useRef<HTMLElement>(undefined!);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleToggleExpand = (event: React.MouseEvent<HTMLElement>) => {
+  const handleToggleExpand = () => {
     setIsExpanded((e) => !e);
-    const scrollContainer = event.currentTarget.closest(
-      "[data-scroll-container]"
-    )!;
-    const scrollAnchor = event.currentTarget.closest(
-      "[data-scroll-anchor]"
-    ) as HTMLElement;
-
-    duringAnimation(
-      500,
-      () =>
-        (scrollContainer.scrollLeft = scrollAnchor.offsetLeft - scrollOffset)
-    );
   };
+
+  const actionLabel = isExpanded ? "Shrink section" : "Expand section";
 
   return (
     <section
+      ref={ref}
       className={`app-section ${isExpanded && "app-section--expanded"}`}
       data-scroll-anchor={true}
+      onTransitionEnd={(event) => {
+        if (event.target === event.currentTarget) {
+          setTimeout(() => {
+            ref.current?.scrollIntoView({
+              behavior: "smooth",
+              inline: "start",
+            });
+          }, 300);
+        }
+      }}
     >
       <Box as="header" alignItems="center" mb={8}>
         <Box mr={8}>
@@ -51,9 +51,9 @@ const AppSection: React.FC<AppSectionProps> = ({
           {heading}
         </Box>
         {isExpandEnabled && (
-          <Tooltip content="Expand section">
+          <Tooltip content={actionLabel}>
             <Button
-              aria-label="Expand section"
+              aria-label={actionLabel}
               minimal
               onClick={handleToggleExpand}
             >

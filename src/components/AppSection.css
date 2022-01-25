@@ -7,6 +7,7 @@
   overflow-y: auto;
   width: 400px;
   transition: width .5s ease-in-out;
+  scroll-snap-align: start;
 }
 .app-section--expanded {
   width: calc(100vw - 64px);
