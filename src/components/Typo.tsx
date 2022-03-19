@@ -1,4 +1,5 @@
 import React, { CSSProperties, useMemo } from "react";
+import { Classes } from "@blueprintjs/core";
 
 interface TypoProps {
   as?: keyof JSX.IntrinsicElements;
@@ -12,8 +13,7 @@ interface TypoProps {
   style?: CSSProperties;
 }
 
-const condClass = (condition: boolean, name: string) =>
-  condition ? `bp4-${name}` : "";
+const condClass = (condition: boolean, name: string) => (condition ? name : "");
 
 const Typo: React.FC<TypoProps> = ({
   as: As = "span",
@@ -31,12 +31,12 @@ const Typo: React.FC<TypoProps> = ({
     () =>
       [
         className,
-        condClass(monospace, "monospace-text"),
-        condClass(large, "text-large"),
-        condClass(small, "text-small"),
-        condClass(muted, "text-muted"),
-        condClass(disabled, "text-disabled"),
-        condClass(ellipsis, "text-overflow-ellipsis"),
+        condClass(monospace, Classes.MONOSPACE_TEXT),
+        condClass(large, Classes.TEXT_LARGE),
+        condClass(small, Classes.TEXT_SMALL),
+        condClass(muted, Classes.TEXT_MUTED),
+        condClass(disabled, Classes.DISABLED),
+        condClass(ellipsis, Classes.TEXT_OVERFLOW_ELLIPSIS),
       ].join(" "),
     [monospace, large, small, muted, disabled, ellipsis, className]
   );
