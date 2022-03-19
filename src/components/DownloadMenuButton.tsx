@@ -27,12 +27,12 @@ const DownloadMenuButton: React.FC<DownloadMenuButtonProps> = ({
           />
         )}
         <MenuItem
-          text="All Sources"
+          text="All sources"
           icon="multi-select"
           onClick={onDownloadAll}
         />
         <MenuItem
-          text="Modified Sources"
+          text="Modified sources"
           icon="changes"
           onClick={onDownloadModified}
         />

@@ -1,8 +1,9 @@
-
+.result-view__table {
+  width: 100%;
+}
 .result-view__table td:not(:last-child),
 .result-view__table th:not(:last-child) {
   width: 0;
-
 }
 .result-view__table__segment {
   background-color: var(--dark-gray-1);
