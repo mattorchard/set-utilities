@@ -1,0 +1,21 @@
+
+.expanding-remove-button {
+  transition: padding-right .25s ease-in-out;
+  padding-right: 0;
+}
+.expanding-remove-button:is(:hover, :focus) {
+  padding-right: 10px;
+}
+
+.expanding-remove-button .bp4-button-text {
+  width: 0;
+  transition-timing-function: inherit;
+  transition-duration: inherit;
+  overflow-x: hidden;
+}
+
+.expanding-remove-button:focus .bp4-button-text,
+.expanding-remove-button:hover .bp4-button-text {
+  width: 3.25rem;
+}
+
