@@ -51,20 +51,31 @@
   animation: illuminate .5s ease-in-out 1 forwards;
 }
 
+.visually-hidden {
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    border-radius: 16px;
+  border-radius: 16px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(20,20,20,.6);
+  background: rgba(20, 20, 20, .6);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-corner {
   border-radius: 10px;
-  background-color: rgba(20,20,20,.6);
+  background-color: rgba(20, 20, 20, .6);
 }

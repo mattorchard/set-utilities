@@ -68,6 +68,7 @@ const App = () => {
   };
   return (
     <Fragment>
+      <h1 className="visually-hidden">Set Utilities</h1>
       <form
         className={`app__form ${
           replacements.length > 0 && "app__form--with-replacements"
