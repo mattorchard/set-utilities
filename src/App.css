@@ -17,10 +17,12 @@
   scroll-snap-type: x mandatory;
   scroll-padding: 0 32px;
 }
+.app__form::-webkit-scrollbar {
+  height: 12px;
+}
 .bumper {
   scroll-snap-align: start
 }
-
 
 .app__form--with-replacements {
   grid-template-columns: 1fr repeat(4, min-content) 1fr;
@@ -31,13 +33,6 @@
     grid-template-columns: unset;
     justify-items: center;
   }
-}
-.bp4-dark button.bp4-button.button--special {
-  background-color: var(--indigo-2);
-}
-
-.bp4-dark button.bp4-button.button--special:hover {
-  background-color: var(--indigo-1);
 }
 @keyframes illuminate {
   from {
@@ -64,7 +59,7 @@
 
 ::-webkit-scrollbar {
   width: 8px;
-  height: 12px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -77,5 +72,5 @@
 }
 ::-webkit-scrollbar-corner {
   border-radius: 10px;
-  background-color: rgba(20, 20, 20, .6);
+  background-color: rgba(20, 20, 20, .4);
 }

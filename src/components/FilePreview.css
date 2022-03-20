@@ -2,6 +2,45 @@
   background-color: var(--dark-gray-1);
   border-radius: 3px;
   padding: 10px;
+  overflow-y: auto;
   overflow-x: auto;
-  white-space: pre-wrap;
+  height: 10rem;
+  transition: height .4s ease-in-out;
+  display: flex;
+  width: 100%;
+  flex-shrink: 2;
+}
+.file-preview__content {
+  display: flex;
+  white-space: pre;
+}
+
+.file-preview .expand-button {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  border-radius: 1000px;
+}
+.file-preview .expand-button svg {
+  transform: rotate(0);
+  transition: transform .5s ease-in-out;
+}
+/*noinspection CssOverwrittenProperties,CssUnresolvedCustomProperty*/
+.file-preview--expanded {
+  height: 80vh;
+  height: calc(1rem + var(--scroll-height));
+}
+.file-preview--expanded .expand-button svg {
+  transform: rotate(-0.5turn);
+}
+.file-preview .expand-button:not(:focus-visible) {
+  outline: none;
+}
+.file-preview .expand-button {
+  opacity: .75;
+  transition: opacity .25s ease-in-out;
+}
+.file-preview .expand-button:hover,
+.file-preview .expand-button:focus {
+  opacity: 1;
 }

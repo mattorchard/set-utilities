@@ -77,7 +77,11 @@ const App = () => {
         data-scroll-container={true}
       >
         <div className="bumper" />
-        <AppSection stepNumber={1} heading="Sources">
+        <AppSection
+          stepNumber={1}
+          heading="Sources"
+          isExpandEnabled={sources.length > 0}
+        >
           <SourcesFieldset
             sources={sources}
             onAddSources={addSources}

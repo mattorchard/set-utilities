@@ -1,25 +1,39 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Typo from "./Typo";
+import { Button } from "@blueprintjs/core";
 import "./FilePreview.css";
 
 interface FilePreviewProps {
   content: string;
-  previewLength?: number;
 }
 
-const FilePreview: React.FC<FilePreviewProps> = ({
-  content,
-  previewLength = 100,
-}) => {
-  const preview = useMemo(
-    () => content.substring(0, previewLength),
-    [content, previewLength]
-  );
+const FilePreview: React.FC<FilePreviewProps> = ({ content }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const ref = useRef<HTMLDivElement>(undefined!);
+  useEffect(() => {
+    ref.current.style.setProperty(
+      "--scroll-height",
+      `${ref.current.scrollHeight}px`
+    );
+  }, [content]);
   return (
-    <Typo as="code" className="file-preview" monospace>
-      {preview}
-      {content.length > previewLength && "…"}
-    </Typo>
+    <div
+      ref={ref}
+      className={`file-preview ${isExpanded && "file-preview--expanded"}`}
+    >
+      <div className="file-preview__content">
+        <Typo as="code" monospace>
+          {content}
+        </Typo>
+      </div>
+      <Button
+        className="expand-button"
+        icon="chevron-down"
+        title={isExpanded ? "Collapse" : "Expand"}
+        aria-label={isExpanded ? "Collapse" : "Expand"}
+        onClick={() => setIsExpanded((e) => !e)}
+      />
+    </div>
   );
 };
 

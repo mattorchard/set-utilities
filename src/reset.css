@@ -56,3 +56,7 @@ a img { border: none; }
 :focus {
   outline: 0;
 }
+
+fieldset {
+  min-inline-size: unset;
+}

@@ -7,6 +7,7 @@ import FilePreview from "./FilePreview";
 import Box from "./Box";
 import Typo from "./Typo";
 import { useFileDrop } from "../hooks/useFileDrop";
+import ExpandingRemoveButton from "./ExpandingRemoveButton";
 
 interface SourcesFieldsetProps {
   sources: RunSource[];
@@ -204,15 +205,9 @@ const SourcesFieldset: React.FC<SourcesFieldsetProps> = ({
                   }
                 />
               )}
-              <Button
-                type="button"
+              <ExpandingRemoveButton
                 onClick={() => onRemoveSource(source.id)}
-                intent="danger"
-                minimal
-                icon={<Icon icon="delete" intent="primary" />}
-              >
-                Remove
-              </Button>
+              />
             </Box>
 
             {source.type === "file" ? (

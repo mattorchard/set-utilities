@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@blueprintjs/core";
 import Box from "./Box";
 import Typo from "./Typo";
 import "./ReplacementsList.css";
 import TallTextArea from "./TallTextArea";
+import ExpandingRemoveButton from "./ExpandingRemoveButton";
 
 interface ReplacementsListProps {
   replacements: RunReplacement[];
@@ -32,14 +32,9 @@ const ReplacementsList: React.FC<ReplacementsListProps> = ({
           className="replacements-list__item illuminate"
         >
           <Box ml="auto">
-            <Button
-              minimal
-              intent="danger"
-              icon="delete"
+            <ExpandingRemoveButton
               onClick={() => handleRemoveReplacement(replacement.id)}
-            >
-              Remove
-            </Button>
+            />
           </Box>
 
           <Typo as="pre" monospace className="replacements-list__item__old">
