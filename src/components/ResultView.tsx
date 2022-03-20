@@ -72,7 +72,7 @@ const ResultView: React.FC<ResultViewProps> = React.memo(
     };
 
     return (
-      <ol>
+      <ol className="non-list">
         {report.map((reportItem, reportIndex) => (
           <Box as="li" flexDirection="column" key={reportItem.id} mb={32}>
             <h3 className="bp4-heading" hidden={!includeHeadings}>
